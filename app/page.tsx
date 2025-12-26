@@ -7,6 +7,7 @@ import "./../app/app.css";
 import { Amplify } from "aws-amplify";
 import outputs from "@/amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
 Amplify.configure(outputs);
 
@@ -31,15 +32,22 @@ export default function App() {
     });
   }
 
+  function deleteTodo(id: string) {
+    client.models.Todo.delete({ id })
+  }
+
+    const {user, signOut } = useAuthenticator();
+
   return (
     <main>
-      <h1>My todos</h1>
+      <h1>{user?.signInDetails?.loginId} todos</h1>
       <button onClick={createTodo}>+ new</button>
       <ul>
         {todos.map((todo) => (
-          <li key={todo.id}>{todo.content}</li>
+          <li onClick={()=>deleteTodo(todo.id)} key={todo.id}>{todo.content}</li>
         ))}
       </ul>
+      <button onClick={signOut}>Sign out</button>
       <div>
         🥳 App successfully hosted. Try creating a new todo.
         <br />
