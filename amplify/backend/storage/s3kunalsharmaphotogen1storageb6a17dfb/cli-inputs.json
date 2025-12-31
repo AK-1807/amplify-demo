@@ -1,0 +1,14 @@
+{
+  "resourceName": "s3kunalsharmaphotogen1storageb6a17dfb",
+  "bucketName": "kunalsharmaphoto-gen1-storage-b6a17dfb",
+  "policyUUID": "53ce5047",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ]
+}

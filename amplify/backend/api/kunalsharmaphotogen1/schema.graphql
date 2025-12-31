@@ -1,0 +1,30 @@
+type Introduction @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Eyebrow: String
+  Title: String
+  Subtitle: String
+  pageID: ID! @index(name: "byPage")
+}
+
+type Sections @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  HeroBanner: HeroBanner @hasOne
+  Introductions: Introduction @hasOne
+}
+
+type Page @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Title: String
+  slug: String
+  HeroBanner: [HeroBanner] @hasMany(indexName: "byPage", fields: ["id"])
+  Introductions: [Introduction] @hasMany(indexName: "byPage", fields: ["id"])
+}
+
+type HeroBanner @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Title: String
+  SubTitle: String
+  Background_Image: AWSURL
+  pageID: ID! @index(name: "byPage")
+}
+ 

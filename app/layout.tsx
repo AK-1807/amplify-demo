@@ -21,9 +21,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <React.StrictMode>
-          <AuthenticatorWrapper>
+          {/* <AuthenticatorWrapper> */}
             {children}
-          </AuthenticatorWrapper>
+          {/* </AuthenticatorWrapper> */}
         </React.StrictMode>
         </body>
     </html>

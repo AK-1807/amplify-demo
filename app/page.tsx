@@ -1,60 +1,70 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { generateClient } from "aws-amplify/data";
-import type { Schema } from "@/amplify/data/resource";
-import "./../app/app.css";
+import { useEffect, useState } from "react";
 import { Amplify } from "aws-amplify";
-import outputs from "@/amplify_outputs.json";
-import "@aws-amplify/ui-react/styles.css";
-import { useAuthenticator } from '@aws-amplify/ui-react';
+import awsExports from "@/src/aws-exports";
+import { generateClient } from "aws-amplify/api";
+import "./page.module.css";
 
-Amplify.configure(outputs);
+Amplify.configure(awsExports);
 
-const client = generateClient<Schema>();
 
-export default function App() {
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+const client = generateClient();
 
-  function listTodos() {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-    });
+const PAGE_ID = "d2ef6fb9-b7c0-4ae1-bd3b-03121a31494c";
+
+const PAGE_QUERY = /* GraphQL */ `
+  query GetPage($id: ID!) {
+    getPage(id: $id) {
+      HeroBanner {
+        items {
+          Title
+          SubTitle
+        }
+      }
+      Introductions {
+        items {
+          Title
+          Subtitle
+        }
+      }
+      Title
+      slug
+    }
   }
+`;
+
+export default function Home() {
+  const [page, setPage] = useState<any>(null);
 
   useEffect(() => {
-    listTodos();
+    async function fetchPage() {
+      const res: any = await client.graphql({
+        query: PAGE_QUERY,
+        variables: { id: PAGE_ID },
+      });
+      console.log(res )
+      setPage(res.data.getPage);
+    }
+
+    fetchPage();
   }, []);
 
-  function createTodo() {
-    client.models.Todo.create({
-      content: window.prompt("Todo content"),
-    });
-  }
+  if (!page) return <h2>Loading…</h2>;
 
-  function deleteTodo(id: string) {
-    client.models.Todo.delete({ id })
-  }
-
-    const {user, signOut } = useAuthenticator();
+  const banner = page?.HeroBanner?.items?.[0]
 
   return (
     <main>
-      <h1>{user?.signInDetails?.loginId} todos</h1>
-      <button onClick={createTodo}>+ new</button>
-      <ul>
-        {todos.map((todo) => (
-          <li onClick={()=>deleteTodo(todo.id)} key={todo.id}>{todo.content}</li>
-        ))}
-      </ul>
-      <button onClick={signOut}>Sign out</button>
-      <div>
-        🥳 App successfully hosted. Try creating a new todo.
-        <br />
-        <a href="https://docs.amplify.aws/nextjs/start/quickstart/nextjs-app-router-client-components/">
-          Review next steps of this tutorial.
-        </a>
-      </div>
+      <h1>{page.Title}</h1>
+
+      {banner && (
+        <section className="banner">
+          <div className="container">
+            <h1>{banner.Title}</h1>
+          </div>
+        </section>
+      )}
     </main>
   );
 }
