@@ -56,7 +56,9 @@ export default function Home() {
 
   return (
     <main>
+     <div className="container">
       <h1>{page.Title}</h1>
+      </div>
 
       {banner && (
         <section className="banner">
