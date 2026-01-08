@@ -5,6 +5,7 @@ import { Amplify } from "aws-amplify";
 import awsExports from "@/src/aws-exports";
 import { generateClient } from "aws-amplify/api";
 import "./page.module.css";
+import Image from "next/image";
 
 Amplify.configure(awsExports);
 
@@ -20,6 +21,7 @@ const PAGE_QUERY = /* GraphQL */ `
         items {
           Title
           SubTitle
+          Background_Image
         }
       }
       Introductions {
@@ -62,8 +64,12 @@ export default function Home() {
 
       {banner && (
         <section className="banner">
+          <div className="bg-img overlay">
+            <Image src={banner.Background_Image} alt="banner" width={1000} height={600} quality={50}/>
+          </div>
           <div className="container">
             <h1>{banner.Title}</h1>
+            <p>{banner.SubTitle}</p>
           </div>
         </section>
       )}
